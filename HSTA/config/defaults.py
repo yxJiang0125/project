@@ -1,0 +1,66 @@
+from yacs.config import CfgNode as CN
+
+_C = CN()
+
+_C.OUTPUT_DIR = 'output'
+_C.LOG_DIR = 'log'
+_C.GPUS = (0,)
+_C.WORKERS = 4
+_C.PRINT_FREQ = 50
+_C.SAVE_CHECKPOINT_FREQ = 10
+_C.AUTO_RESUME = False
+_C.PIN_MEMORY = True
+
+_C.CUDNN = CN()
+_C.CUDNN.BENCHMARK = True
+_C.CUDNN.DETERMINISTIC = False
+_C.CUDNN.ENABLED = True
+
+_C.DATASET = CN()
+_C.DATASET.ROOT = 'datasets'
+_C.DATASET.DATASET = 'ped2'
+_C.DATASET.TRAINSET = 'training/frames'
+_C.DATASET.TESTSET = 'testing/frames'
+_C.DATASET.NUM_INCHANNELS = 3
+_C.DATASET.NUM_FRAMES = 4
+_C.DATASET.FRAME_STEPS = 1
+_C.DATASET.LOWER_BOUND = 500
+
+_C.TRAIN = CN()
+_C.TRAIN.BATCH_SIZE_PER_GPU = 4
+_C.TRAIN.SHUFFLE = True
+_C.TRAIN.BEGIN_EPOCH = 0
+_C.TRAIN.END_EPOCH = 150
+_C.TRAIN.RESUME = False
+_C.TRAIN.CHECKPOINT = ''
+_C.TRAIN.OPTIMIZER = 'adam'
+_C.TRAIN.MOMENTUM = 0.0
+_C.TRAIN.WD = 0.0
+_C.TRAIN.NESTEROV = False
+_C.TRAIN.LR_TYPE = 'multistep'
+_C.TRAIN.LR = 0.0002
+_C.TRAIN.LR_STEP = [80, 120]
+_C.TRAIN.LR_FACTOR = 0.5
+
+_C.TEST = CN()
+_C.TEST.BATCH_SIZE_PER_GPU = 1
+_C.TEST.ANOMALY_THRESHOLD = 20.0
+
+_C.MODEL = CN()
+_C.MODEL.NAME = 'HSTA'
+_C.MODEL.INIT_WEIGHTS = True
+_C.MODEL.PRETRAINED = ''
+_C.MODEL.IMAGE_SIZE = [224, 224]
+_C.MODEL.MEMORY_SIZE = 3
+_C.MODEL.ENCODED_FRAMES = 4
+_C.MODEL.DECODED_FRAMES = 0
+
+_C.MODEL.EXTRA = CN()
+_C.MODEL.EXTRA.FINAL_CONV_KERNEL = 1
+
+
+def update_config(cfg, args):
+    cfg.defrost()
+    cfg.merge_from_file(args.cfg)
+    cfg.merge_from_list(args.opts)
+    cfg.freeze()
